@@ -496,7 +496,7 @@
     <!-- Hero Section -->
     <section class="hero">
         <h1>MINECRAFTERS</h1>
-        <p> Your Team's Epic Adventures</p>
+        <p>Your Team's Epic Adventures</p>
     </section>
 
     <!-- Main Content -->
@@ -776,9 +776,38 @@
             fetchPlayers();
         }
 
-        document.getElementById('playerFilter').addEventListener('change', displayMessages);
-        setInterval(refreshMessages, 2000);
+        // Preserve scroll position when updating messages
+        let lastScrollPosition = 0;
+
+        function saveScrollPosition() {
+            const activityGrid = document.getElementById('activityGrid');
+            if (activityGrid) {
+                lastScrollPosition = activityGrid.scrollTop;
+            }
+        }
+
+        function restoreScrollPosition() {
+            const activityGrid = document.getElementById('activityGrid');
+            if (activityGrid) {
+                activityGrid.scrollTop = lastScrollPosition;
+            }
+        }
+
+        function refreshMessagesWithScroll() {
+            saveScrollPosition();
+            refreshMessages();
+            setTimeout(restoreScrollPosition, 100);
+        }
+
+        document.getElementById('playerFilter').addEventListener('change', function() {
+            saveScrollPosition();
+            displayMessages();
+            setTimeout(restoreScrollPosition, 100);
+        });
+
+        setInterval(refreshMessagesWithScroll, 3000); // Increased to 3 seconds
         refreshMessages();
     </script>
 </body>
 </html>
+
