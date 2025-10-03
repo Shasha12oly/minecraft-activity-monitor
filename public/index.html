@@ -536,7 +536,7 @@
                     <img src="images/neon.jpg" alt="NEON" onerror="this.src='https://crafatar.com/avatars/NEON_945?overlay'">
                 </div>
                 <div class="member-name">NEON</div>
-                <div class="member-role">💎 LEGEND</div>
+                <div class="member-role">💎 LEADER</div>
                 <div class="status-badge offline" id="status-neon">● OFFLINE</div>
             </div>
         </div>
@@ -666,7 +666,7 @@
         function displayMessages() {
             const grid = document.getElementById('activityGrid');
             const filter = document.getElementById('playerFilter').value;
-            
+
             let messagesToShow = allMessages;
             if (filter !== 'all') {
                 messagesToShow = allMessages.filter(m => m.playerName === filter);
@@ -681,15 +681,77 @@
                     playerGroups[msg.playerName].push(msg);
                 });
 
-                grid.innerHTML = '';
-                Object.keys(playerGroups).forEach(playerName => {
-                    const card = createPlayerCard(playerName, playerGroups[playerName]);
-                    grid.appendChild(card);
-                });
+                // Only rebuild if the number of players changed
+                const currentPlayers = Object.keys(playerGroups).length;
+                const existingCards = grid.children.length;
+
+                if (currentPlayers !== existingCards) {
+                    grid.innerHTML = '';
+                    Object.keys(playerGroups).forEach(playerName => {
+                        const card = createPlayerCard(playerName, playerGroups[playerName]);
+                        grid.appendChild(card);
+                    });
+                } else {
+                    // Update existing cards instead of rebuilding
+                    updateExistingCards(playerGroups);
+                }
             } else {
-                grid.innerHTML = '';
-                const card = createPlayerCard(filter, messagesToShow);
-                grid.appendChild(card);
+                // For single player view, rebuild if necessary
+                const existingCards = grid.children.length;
+                if (existingCards !== 1) {
+                    grid.innerHTML = '';
+                    const card = createPlayerCard(filter, messagesToShow);
+                    grid.appendChild(card);
+                } else {
+                    // Update the single existing card
+                    updateSingleCard(filter, messagesToShow);
+                }
+            }
+        }
+
+        function updateExistingCards(playerGroups) {
+            const grid = document.getElementById('activityGrid');
+            const cards = Array.from(grid.children);
+
+            Object.keys(playerGroups).forEach((playerName, index) => {
+                if (cards[index]) {
+                    const card = cards[index];
+                    const messages = playerGroups[playerName];
+                    updateCardContent(card, playerName, messages);
+                }
+            });
+        }
+
+        function updateSingleCard(playerName, messages) {
+            const grid = document.getElementById('activityGrid');
+            const card = grid.children[0];
+            if (card) {
+                updateCardContent(card, playerName, messages);
+            }
+        }
+
+        function updateCardContent(card, playerName, messages) {
+            const lastMessage = messages[messages.length - 1];
+            const isOnline = lastMessage && lastMessage.type === 'JOIN';
+            const server = lastMessage && lastMessage.server ? lastMessage.server : 'Unknown';
+
+            const messagesContainer = card.querySelector('.messages-container');
+            if (messagesContainer) {
+                const newMessagesHTML = messages.length === 0 ? '<div class="no-messages">No messages yet</div>' :
+                    messages.slice().reverse().map(msg => createMessageHTML(msg)).join('');
+
+                if (messagesContainer.innerHTML !== newMessagesHTML) {
+                    messagesContainer.innerHTML = newMessagesHTML;
+                }
+            }
+
+            // Update status if needed
+            const statusElement = card.querySelector('.activity-status');
+            if (statusElement) {
+                const newStatus = `${isOnline ? '🟢 Online' : '🔴 Offline'} • ${server}`;
+                if (statusElement.textContent !== newStatus) {
+                    statusElement.textContent = newStatus;
+                }
             }
         }
 
@@ -810,4 +872,5 @@
     </script>
 </body>
 </html>
+
 
