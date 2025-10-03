@@ -536,7 +536,7 @@
                     <img src="images/neon.jpg" alt="NEON" onerror="this.src='https://crafatar.com/avatars/NEON_945?overlay'">
                 </div>
                 <div class="member-name">NEON</div>
-                <div class="member-role">💎 LEADER</div>
+                <div class="member-role">💎 LEGEND</div>
                 <div class="status-badge offline" id="status-neon">● OFFLINE</div>
             </div>
         </div>
@@ -838,39 +838,72 @@
             fetchPlayers();
         }
 
-        // Preserve scroll position when updating messages
+        // Perfect scroll preservation - zero movement
         let lastScrollPosition = 0;
+        let lastScrollHeight = 0;
+        let isUpdating = false;
 
         function saveScrollPosition() {
             const activityGrid = document.getElementById('activityGrid');
-            if (activityGrid) {
+            if (activityGrid && !isUpdating) {
                 lastScrollPosition = activityGrid.scrollTop;
+                lastScrollHeight = activityGrid.scrollHeight;
             }
         }
 
         function restoreScrollPosition() {
             const activityGrid = document.getElementById('activityGrid');
-            if (activityGrid) {
-                activityGrid.scrollTop = lastScrollPosition;
+            if (activityGrid && !isUpdating) {
+                const currentHeight = activityGrid.scrollHeight;
+                const heightDiff = currentHeight - lastScrollHeight;
+
+                // If content was added, adjust scroll position
+                if (heightDiff > 0) {
+                    activityGrid.scrollTop = lastScrollPosition + heightDiff;
+                } else {
+                    activityGrid.scrollTop = lastScrollPosition;
+                }
             }
         }
 
         function refreshMessagesWithScroll() {
+            if (isUpdating) return; // Prevent multiple simultaneous updates
+
+            isUpdating = true;
             saveScrollPosition();
+
             refreshMessages();
-            setTimeout(restoreScrollPosition, 100);
+
+            // Use requestAnimationFrame for perfect timing
+            requestAnimationFrame(() => {
+                restoreScrollPosition();
+                setTimeout(() => {
+                    isUpdating = false;
+                }, 50);
+            });
         }
 
         document.getElementById('playerFilter').addEventListener('change', function() {
+            if (isUpdating) return;
+
+            isUpdating = true;
             saveScrollPosition();
+
             displayMessages();
-            setTimeout(restoreScrollPosition, 100);
+
+            requestAnimationFrame(() => {
+                restoreScrollPosition();
+                setTimeout(() => {
+                    isUpdating = false;
+                }, 50);
+            });
         });
 
-        setInterval(refreshMessagesWithScroll, 3000); // Increased to 3 seconds
+        // Save scroll position on scroll events
+        document.addEventListener('scroll', saveScrollPosition, { passive: true });
+
+        setInterval(refreshMessagesWithScroll, 5000); // Increased to 5 seconds for less disruption
         refreshMessages();
     </script>
 </body>
 </html>
-
-
