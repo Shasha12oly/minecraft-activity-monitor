@@ -464,14 +464,160 @@
             .hero h1 {
                 font-size: 2.5em;
             }
-            
+
             .nav-content {
                 flex-direction: column;
                 gap: 15px;
             }
-            
+
             .activity-grid {
                 grid-template-columns: 1fr;
+            }
+
+            /* Mobile optimizations */
+            .container {
+                padding: 20px 15px;
+            }
+
+            .section-title {
+                font-size: 2em;
+            }
+
+            .team-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .nav-buttons {
+                flex-direction: column;
+                width: 100%;
+            }
+
+            .mc-button {
+                width: 100%;
+                padding: 15px;
+                font-size: 18px;
+            }
+
+            .controls {
+                flex-direction: column;
+            }
+
+            .controls select {
+                width: 100%;
+                min-width: auto;
+                font-size: 18px;
+                padding: 15px;
+            }
+
+            .activity-card {
+                padding: 20px 15px;
+            }
+
+            .member-avatar {
+                width: 120px;
+                height: 120px;
+            }
+
+            .stat-card {
+                padding: 25px 15px;
+            }
+
+            .stat-value {
+                font-size: 2.5em;
+            }
+
+            .footer {
+                padding: 20px 15px;
+                font-size: 14px;
+            }
+        }
+
+        /* Extra small devices (phones) */
+        @media (max-width: 480px) {
+            .hero {
+                padding: 60px 15px;
+            }
+
+            .hero h1 {
+                font-size: 2em;
+                letter-spacing: 1px;
+            }
+
+            .hero p {
+                font-size: 1.2em;
+            }
+
+            .logo-text {
+                font-size: 1.5em;
+            }
+
+            .section-title {
+                font-size: 1.8em;
+            }
+
+            .member-name {
+                font-size: 1.5em;
+            }
+
+            .member-role {
+                font-size: 1em;
+            }
+
+            .activity-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 10px;
+            }
+
+            .activity-avatar {
+                width: 80px;
+                height: 80px;
+                margin: 0 auto;
+            }
+
+            .messages-container {
+                max-height: 300px;
+            }
+
+            .message {
+                padding: 12px 10px;
+                font-size: 14px;
+            }
+
+            .mc-button {
+                padding: 12px;
+                font-size: 16px;
+            }
+        }
+
+        /* Landscape phones */
+        @media (max-height: 500px) and (orientation: landscape) {
+            .hero {
+                padding: 40px 15px;
+            }
+
+            .hero h1 {
+                font-size: 1.8em;
+                margin-bottom: 10px;
+            }
+
+            .hero p {
+                font-size: 1em;
+            }
+
+            .container {
+                padding: 15px;
+            }
+
+            .section-title {
+                font-size: 1.5em;
+                margin-bottom: 15px;
             }
         }
     </style>
@@ -907,3 +1053,4 @@
     </script>
 </body>
 </html>
+
